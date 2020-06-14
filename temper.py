@@ -82,8 +82,8 @@ class USBList(object):
         info['vendorid'] = int(vendorid, 16)
         productid = self._readfile(os.path.join(dirname, 'idProduct'))
         info['productid'] = int(productid, 16)
-        info['manufacturer'] = self._readfile(os.path.join(dirname,
-                                                                                                             'manufacturer'))
+        info['manufacturer'] = self._readfile(
+            os.path.join(dirname, 'manufacturer'))
         info['product'] = self._readfile(os.path.join(dirname, 'product'))
         info['busnum'] = int(self._readfile(os.path.join(dirname, 'busnum')))
         info['devnum'] = int(self._readfile(os.path.join(dirname, 'devnum')))
@@ -216,8 +216,8 @@ class USBRead(object):
             self._parse_bytes('external humidity', 12, 100.0, bytes, info)
             return info
 
-        info['error'] = 'Unknown firmware %s: %s' % (info['firmware'],
-                                                                                                 binascii.hexlify(bytes))
+        info['error'] = 'Unknown firmware %s: %s' % (
+            info['firmware'], binascii.hexlify(bytes))
         return info
 
     def _read_serial(self, device):
@@ -314,14 +314,15 @@ class Temper(object):
             return
 
         for _, info in sorted(self.usb_devices.items(),
-                                                    key=lambda x: x[1]['busnum'] * 1000 + \
-                                                                                x[1]['devnum']):
+                              key=lambda x: x[1]['busnum'] * 1000 + x[1][
+                                  'devnum']):
             print('Bus %03d Dev %03d %04x:%04x %s %s %s' % (
                 info['busnum'],
                 info['devnum'],
                 info['vendorid'],
                 info['productid'],
-                '*' if self._is_known_id(info['vendorid'], info['productid']) else ' ',
+                '*' if self._is_known_id(info['vendorid'],
+                                         info['productid']) else ' ',
                 info.get('product', '???'),
                 list(info['devices']) if len(info['devices']) > 0 else ''))
 
@@ -333,9 +334,9 @@ class Temper(object):
         error.
         '''
         results = []
-        for _, info in sorted(self.usb_devices.items(),
-                                                    key=lambda x: x[1]['busnum'] * 1000 + \
-                                                                                x[1]['devnum']):
+        for _, info in sorted(
+                self.usb_devices.items(),
+                key=lambda x: x[1]['busnum'] * 1000 + x[1]['devnum']):
             if not self._is_known_id(info['vendorid'], info['productid']):
                 continue
             if len(info['devices']) == 0:
@@ -375,11 +376,10 @@ class Temper(object):
             return
 
         for info in results:
-            s = 'Bus %03d Dev %03d %04x:%04x %s' % (info['busnum'],
-                                                                                            info['devnum'],
-                                                                                            info['vendorid'],
-                                                                                            info['productid'],
-                                                                                            info.get('firmware'))
+            s = 'Bus %03d Dev %03d %04x:%04x %s' % (
+                info['busnum'], info['devnum'], info['vendorid'],
+                info['productid'],
+                info.get('firmware'))
             if 'error' in info:
                 s += ' Error: %s' % info['error']
             else:
