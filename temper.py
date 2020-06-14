@@ -366,13 +366,17 @@ class Temper(object):
             return '-'
         return '%d%%' % int(info[name])
 
-    def print(self, results, use_json=False):
+    def print(self, results, use_json=False, internal=False):
         '''Print out a list of all of the known USB sensor devices on the system.
         If 'use_json' is True, then JSON formatting will be used.
         '''
 
         if use_json:
             print(json.dumps(results, indent=4))
+            return
+
+        if internal:
+            print('{}'.format(results[0]['internal temperature']))
             return
 
         for info in results:
@@ -396,16 +400,18 @@ class Temper(object):
 
         parser = argparse.ArgumentParser(description='temper')
         parser.add_argument('-l', '--list', action='store_true',
-                                                help='List all USB devices')
+                            help='List all USB devices')
         parser.add_argument('--json', action='store_true',
-                                                help='Provide output as JSON')
+                            help='Provide output as JSON')
+        parser.add_argument('-i', '--internal', action='store_true',
+                            help='Only print internal temperature.')
         parser.add_argument('-o', '--offset', type=float,
-                                                help='Set a simple offset. Can be negative.')
+                            help='Set a simple offset. Can be negative.')
         parser.add_argument('--force', type=str,
-                                                help='Force the use of the hex id; ignore other ids',
-                                                metavar=('VENDOR_ID:PRODUCT_ID'))
+                            help='Force the use of the hex id; ignore other ids',
+                            metavar=('VENDOR_ID:PRODUCT_ID'))
         parser.add_argument('--verbose', action='store_true',
-                                                help='Output binary data from thermometer')
+                            help='Output binary data from thermometer')
         args = parser.parse_args()
         self.verbose = args.verbose
 
@@ -431,7 +437,7 @@ class Temper(object):
         results = self.read(args.verbose)
         if args.offset:
             results[0]['internal temperature'] += args.offset
-        self.print(results, args.json)
+        self.print(results, use_json=args.json, internal=args.internal)
         return 0
 
 
