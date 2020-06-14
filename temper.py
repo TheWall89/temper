@@ -395,6 +395,8 @@ class Temper(object):
                         help='List all USB devices')
     parser.add_argument('--json', action='store_true',
                         help='Provide output as JSON')
+    parser.add_argument('-o', '--offset', type=float,
+                        help='Set a simple offset. Can be negative.')
     parser.add_argument('--force', type=str,
                         help='Force the use of the hex id; ignore other ids',
                         metavar=('VENDOR_ID:PRODUCT_ID'))
@@ -423,6 +425,8 @@ class Temper(object):
 
     # By default, output the temperature and humidity for all known sensors.
     results = self.read(args.verbose)
+    if args.offset:
+      results[0]['internal temperature'] += args.offset
     self.print(results, args.json)
     return 0
 
