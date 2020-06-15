@@ -377,7 +377,7 @@ class Temper(object):
 
         if internal:
             try:
-                print('{}'.format(results[0]['internal temperature']))
+                print('{:.2f}'.format(results[0]['internal temperature']))
             except KeyError:
                 print('NA')
             return
