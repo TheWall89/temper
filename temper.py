@@ -439,7 +439,10 @@ class Temper(object):
         # By default, output the temperature and humidity for all known sensors.
         results = self.read(args.verbose)
         if args.offset:
-            results[0]['internal temperature'] += args.offset
+            try:
+                results[0]['internal temperature'] += args.offset
+            except KeyError:
+                pass
         self.print(results, use_json=args.json, internal=args.internal)
         return 0
 
